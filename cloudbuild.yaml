@@ -1,7 +1,7 @@
 steps:
   - name: 'gcr.io/cloud-builders/docker'
     entrypoint: 'bash'
-    args: ['-c', 'docker pull gcr.io/$PROJECT_ID/${_ENDPOINT}:latest || exit 0']
+    args: ['-c', 'docker pull gcr.io/$PROJECT_ID/demo-desmat:latest || exit 0']
 
   - name: 'gcr.io/cloud-builders/docker'
     args:
@@ -10,23 +10,23 @@ steps:
         '--build-arg',
         'NODE_VERSION=16.11.1',
         '-t',
-        'gcr.io/$PROJECT_ID/${_ENDPOINT}',
+        'gcr.io/$PROJECT_ID/demo-desmat',
         '--cache-from',
-        'gcr.io/$PROJECT_ID/${_ENDPOINT}:latest',
+        'gcr.io/$PROJECT_ID/demo-desmat:latest',
         '.',
       ]
 
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'gcr.io/$PROJECT_ID/${_ENDPOINT}']
+    args: ['push', 'gcr.io/$PROJECT_ID/demo-desmat']
 
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: gcloud
     args:
       - 'run'
       - 'deploy'
-      - '${_ENDPOINT}'
+      - 'demo-desmat'
       - '--image'
-      - 'gcr.io/$PROJECT_ID/${_ENDPOINT}'
+      - 'gcr.io/$PROJECT_ID/demo-desmat'
       - '--region'
       - 'europe-west6'
       - '--platform'
@@ -35,4 +35,4 @@ steps:
       - '--port'
       - '80'
 timeout: 7200s
-images: ['gcr.io/$PROJECT_ID/${_ENDPOINT}:latest']
+images: ['gcr.io/$PROJECT_ID/demo-desmat:latest']
